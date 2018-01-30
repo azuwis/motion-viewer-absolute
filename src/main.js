@@ -9,5 +9,12 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   components: { App },
-  template: '<App liveStream="live" motionPrefix="motion/" spriteFrames="50" />'
+  data: function () {
+    return window.motionViewerConfig ? window.motionViewerConfig : {
+      liveStream: 'live/',
+      motionPrefix: 'motion/',
+      spriteFrames: 50
+    }
+  },
+  template: '<App :liveStream="liveStream" :motionPrefix="motionPrefix" :spriteFrames="spriteFrames" />'
 })
