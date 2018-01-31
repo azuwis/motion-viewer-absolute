@@ -8,7 +8,7 @@
       <button class="button is-primary" @click="bottom">Bottom</button>
     </div>
     <div class="control">
-      <button class="button is-primary" :class="{'is-loading': isLoading}" @click="update">Update</button>
+      <button class="button is-primary" :class="{'is-loading': isLoading}" @click="updateVideos">Update</button>
     </div>
   </div>
   <div class="columns is-mobile is-multiline is-gapless">
@@ -27,7 +27,7 @@
       <button class="button is-primary" @click="top">Top</button>
     </div>
     <div class="control">
-      <button class="button is-primary" :class="{'is-loading': isLoading}" @click="update">Update</button>
+      <button class="button is-primary" :class="{'is-loading': isLoading}" @click="updateVideos">Update</button>
     </div>
   </div>
 </div>
@@ -59,11 +59,11 @@ export default {
   },
   watch: {
     date: function () {
-      this.update(false)
+      this.updateVideos(false)
     }
   },
   methods: {
-    update: function (force = true) {
+    updateVideos: function (force = true) {
       if (!force && this.videos[this.date]) return
       this.isLoading = true
       axios.get(`${this.motionPrefix}${this.date}/`).then(response => {
@@ -101,7 +101,7 @@ export default {
     }
   },
   created: function () {
-    this.update()
+    this.updateVideos()
     this.updateDateRange()
   }
 }
