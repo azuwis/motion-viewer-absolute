@@ -58,7 +58,7 @@ export default {
   },
   computed: {
     videosFiltered: function () {
-      const date = new Date(`${this.date} 00:00:00`)
+      const date = this.date ? new Date(`${this.date} 00:00:00`) : new Date(0)
       return this.videos.filter(video => {
         return video.date >= date && video.date <= date.fp_incr(1)
       })
