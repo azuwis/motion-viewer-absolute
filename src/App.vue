@@ -39,6 +39,7 @@ import MotionVideo from './components/MotionVideo.vue'
 import axios from 'axios'
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
+import {getDate} from './utils'
 
 export default {
   name: 'App',
@@ -49,11 +50,10 @@ export default {
   },
   props: ['liveStream', 'motionPrefix', 'spriteFrames'],
   data: function () {
-    const date = new Date()
     return {
       isLoading: false,
       videos: [],
-      date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+      date: getDate(new Date())
     }
   },
   computed: {
@@ -67,8 +67,8 @@ export default {
       let minDate = null
       let maxDate = null
       if (this.videos.length > 0) {
-        minDate = this.videos[0].date
-        maxDate = this.videos[this.videos.length - 1].date
+        minDate = getDate(this.videos[0].date)
+        maxDate = getDate(this.videos[this.videos.length - 1].date)
       }
       return {
         minDate: minDate,
