@@ -15,7 +15,7 @@
     <div v-if="liveStream" class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop">
       <m-jpeg :src="liveStream"></m-jpeg>
     </div>
-    <div class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop" v-for="video in videosFiltered" :key="video.baseName">
+    <div class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop" v-for="video in videos[date]" :key="video.baseName">
       <motion-video :baseName="video.baseName" :spriteFrames="spriteFrames"></motion-video>
     </div>
   </div>
@@ -52,46 +52,45 @@ export default {
   data: function () {
     return {
       isLoading: false,
-      videos: [],
-      date: getDate(new Date())
+      videos: {},
+      date: getDate(new Date()),
+      dateConfig: {}
     }
   },
-  computed: {
-    videosFiltered: function () {
-      const date = this.date ? new Date(`${this.date} 00:00:00`) : new Date(0)
-      return this.videos.filter(video => {
-        return video.date >= date && video.date <= date.fp_incr(1)
-      })
-    },
-    dateConfig: function () {
-      let minDate = null
-      let maxDate = null
-      if (this.videos.length > 0) {
-        minDate = getDate(this.videos[0].date)
-        maxDate = getDate(this.videos[this.videos.length - 1].date)
-      }
-      return {
-        minDate: minDate,
-        maxDate: maxDate
-      }
+  watch: {
+    date: function () {
+      this.update(false)
     }
   },
   methods: {
-    update: function () {
+    update: function (force = true) {
+      if (!force && this.videos[this.date]) return
       this.isLoading = true
-      axios.get(this.motionPrefix).then(response => {
+      axios.get(`${this.motionPrefix}${this.date}/`).then(response => {
         this.isLoading = false
-        this.videos = response.data.filter(file => {
+        this.videos[this.date] = response.data.filter(file => {
           return file.name.endsWith('.jpg') && !file.name.endsWith('-sprite.jpg')
         }).map(file => {
-          const m = file.name.match(/^(\d{4})-(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})\./)
-          const date = new Date(`${m[1]}-${m[2]}-${m[3]} ${m[4]}:${m[5]}:${m[6]}`)
-          const baseName = this.motionPrefix + file.name.replace(/\.jpg$/, '')
+          const baseName = `${this.motionPrefix}${this.date}/${file.name.replace(/\.jpg$/, '')}`
           return {
-            baseName: baseName,
-            date: date
+            baseName: baseName
           }
         })
+      }).catch(() => {
+        this.isLoading = false
+      })
+    },
+    updateDateRange: function () {
+      axios.get(`${this.motionPrefix}`).then(response => {
+        const dirs = response.data.filter(file => {
+          return file.type === 'directory'
+        })
+        if (dirs.length > 0) {
+          const minDate = dirs[0].name
+          const maxDate = dirs[dirs.length - 1].name
+          this.$set(this.dateConfig, 'minDate', minDate)
+          this.$set(this.dateConfig, 'maxDate', maxDate)
+        }
       })
     },
     bottom: function () {
@@ -103,6 +102,7 @@ export default {
   },
   created: function () {
     this.update()
+    this.updateDateRange()
   }
 }
 </script>
