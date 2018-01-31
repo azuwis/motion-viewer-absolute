@@ -8,6 +8,9 @@
       <button class="button is-primary" @click="bottom">Bottom</button>
     </div>
     <div class="control">
+      <button class="button is-primary" @click="today">Today</button>
+    </div>
+    <div class="control">
       <button class="button is-primary" :class="{'is-loading': isLoading}" @click="updateVideos">Update</button>
     </div>
   </div>
@@ -25,6 +28,9 @@
     </div>
     <div class="control">
       <button class="button is-primary" @click="top">Top</button>
+    </div>
+    <div class="control">
+      <button class="button is-primary" @click="today">Today</button>
     </div>
     <div class="control">
       <button class="button is-primary" :class="{'is-loading': isLoading}" @click="updateVideos">Update</button>
@@ -92,6 +98,9 @@ export default {
           this.$set(this.dateConfig, 'maxDate', maxDate)
         }
       })
+    },
+    today: function () {
+      this.date = getDate(new Date())
     },
     bottom: function () {
       window.scrollTo(0, document.body.scrollHeight)
