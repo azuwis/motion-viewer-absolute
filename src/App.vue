@@ -58,8 +58,8 @@ export default {
   },
   computed: {
     videosFiltered: function () {
+      const date = new Date(`${this.date} 00:00:00`)
       return this.videos.filter(video => {
-        const date = new Date(`${this.date} 00:00:00`)
         return video.date >= date && video.date <= date.fp_incr(1)
       })
     },
