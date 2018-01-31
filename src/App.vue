@@ -12,7 +12,7 @@
     </div>
   </div>
   <div class="columns is-mobile is-multiline is-gapless">
-    <div class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop">
+    <div v-if="liveStream" class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop">
       <m-jpeg :src="liveStream"></m-jpeg>
     </div>
     <div class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop" v-for="video in videosFiltered" :key="video.baseName">
